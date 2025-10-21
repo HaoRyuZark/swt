@@ -7,3 +7,6 @@
 *.toc
 *.out
 *.vscode
+*plantuml.png
+*plantuml.txt
+*.pytxcode

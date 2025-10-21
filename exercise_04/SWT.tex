@@ -37,6 +37,7 @@
 \usepackage{tikz}
 \usetikzlibrary{calc,intersections,decorations.pathreplacing,patterns,angles,quotes,shapes,arrows,positioning,automata}
 \usepgfplotslibrary{fillbetween}
+\usepackage[output=png]{plantuml} % <— PlantUML für UML-Diagramme
 
 % -----------------------------
 % Sonstige Nützliches
@@ -148,6 +149,69 @@
 \end{table}
 
 \section*{Aufgabe 4 - UML-Klassendiagramm/Zustandsdiagramm: Stapelspeicher}
-% (Inhalt folgt ggf.)
+
+\subsection*{Klassendiagramm (\enquote{Stack<TElement>})}
+% Eindeutiger Ausgabename für das folgende Diagramm
+\def\PlantUMLJobname{SWT-class}
+\begin{plantuml}
+@startuml
+hide empty members
+skinparam classAttributeIconSize 0
+
+' Parametrisierte Klasse mit Template-Parameter TElement
+class Stack<TElement> <<template>> {
+  - capacity : Integer {readOnly}
+  - count    : Integer {readOnly}
+
+  + Stack(capacity : Integer)
+  + push(e : TElement) : void
+  + pop()  : TElement [0..1]
+  + peek() : TElement [0..1]
+}
+
+' Invarianten und Randbedingungen nach Aufgabenstellung / Folien
+note right of Stack
+  {invariant: capacity \u2265 2}
+  {constraint: TElement ist ein Referenztyp (kein primitiver Typ)}
+end note
+@enduml
+\end{plantuml}
+
+\subsection*{Zustandsdiagramm (Call Events, Guards, Effects)}
+% Eindeutiger Ausgabename für das folgende Diagramm
+\def\PlantUMLJobname{SWT-states}
+\begin{plantuml}
+@startuml
+hide empty description
+
+[*] --> Empty
+
+state "Empty" as Empty
+state "Filled" as Filled
+state "Full" as Full
+
+' --- Empty ---
+Empty --> Filled : push(e:TElement)\n[count < capacity]\n/ count := count + 1
+Empty --> Empty  : pop()\n[count == 0]\n/ return null
+Empty --> Empty  : peek()\n[count == 0]\n/ return null
+
+' --- Filled ---
+Filled --> Full   : push(e:TElement)\n[count + 1 == capacity]\n/ count := count + 1
+Filled --> Filled : push(e:TElement)\n[count + 1 <  capacity]\n/ count := count + 1
+Filled --> Empty  : pop()\n[count - 1 == 0]\n/ count := count - 1
+Filled --> Filled : pop()\n[count - 1  > 0]\n/ count := count - 1
+Filled --> Filled : peek()\n[count > 0]\n/ return top
+
+' --- Full ---
+Full --> Full   : push(e:TElement)\n[count == capacity]\n/ no-op
+Full --> Empty  : pop()\n[count - 1 == 0]\n/ count := count - 1
+Full --> Filled : pop()\n[count - 1  > 0]\n/ count := count - 1
+Full --> Full   : peek()\n[count > 0]\n/ return top
+
+' Ende im Zustand Empty
+Empty --> [*] : dispose()
+@enduml
+\end{plantuml}
+
 
 \end{document}
