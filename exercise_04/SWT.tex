@@ -44,6 +44,9 @@
 \usepackage{hyperref}
 \usepackage{siunitx} % für circuitikz/si-Einheiten falls benötigt
 \usepackage{circuitikz} % optional, behält Option ohne Fehler
+\usepackage{bookmark}
+\usepackage{tabularx}
+\usepackage{booktabs}
 
 % Header/Footer
 \pagestyle{fancy}
@@ -59,5 +62,71 @@
 
 \begin{document}
 
+\section*{A2 Scrum}
+
+\subsection*{[a] Vorgehen in zwei Situationen während des Sprints}
+
+\paragraph{Fall 1: Sprintziel und alle User Stories sind \emph{vorzeitig} erfüllbar.}
+\begin{enumerate}
+\item \textbf{Sprint nicht verlängern oder verkürzen} (Timeboxing beibehalten): Die Sprintdauer ist fix und wird nicht angepasst; nur Ereignisse dürfen enden, sobald ihr Zweck erfüllt ist. 
+\item \textbf{Mit dem Product Owner (PO) \emph{Scope neu vereinbaren}:} Das Dev-Team kann, falls sinnvoll, weitere gut vorbereitete Product-Backlog-Einträge (DoR erfüllt) in den Sprint \emph{ziehen}, sofern das Sprintziel nicht gefährdet wird. Inhalt und Umfang des Sprints dürfen mit dem PO neu vereinbart werden. 
+\item \textbf{Weitere Inkremente liefern:} Mehrere Inkremente pro Sprint sind möglich; vorzeitige Lieferung ist erlaubt, solange die \emph{Definition of Done} eingehalten wird. 
+\item \textbf{Qualität stärken & Schulden abbauen:} Falls keine zusätzlichen, wertvollen Stories verfügbar sind: Refactoring, Testausbau und Dokumentation gemäß DoD priorisieren. 
+\item \textbf{Sprintabbruch nur in Ausnahmefällen:} Wird das Sprintziel obsolet, kann ausschließlich der PO den Sprint abbrechen. 
+\end{enumerate}
+
+\paragraph{Fall 2: Sprintziel und User Stories sind \emph{sehr wahrscheinlich} nicht rechtzeitig erfüllbar.}
+\begin{enumerate}
+\item \textbf{Transparenz & Re-Planung im Daily Scrum:} Fortschritt und Hindernisse offenlegen; Plan anpassen, um das Sprintziel bestmöglich zu erreichen. 
+\item \textbf{Scope mit dem PO neu verhandeln:} Umfang des Sprint Backlogs \emph{reduzieren} (z.,B.\ niedere Prioritäten verschieben), ohne das Sprintziel oder Qualitätsansprüche zu gefährden. \emph{Qualität nimmt nicht ab}. 
+\item \textbf{Impediments beseitigen lassen:} Der Scrum Master unterstützt aktiv beim Entfernen von Hindernissen. 
+\item \textbf{DoD nicht aufweichen:} Keine Abstriche bei Qualitätskriterien; unvollständige Arbeit bleibt \enquote{nicht fertig} und wird transparent gemacht. 
+\item \textbf{Keine Sprintverlängerung und kein \enquote{Personen nachschieben}:} Die Sprintlänge bleibt fix; zusätzliches Personal macht späte Projekte oft noch später (Brooks’sches Gesetz). 
+\item \textbf{Stakeholder-Einbindung:} Ergebnisse und Anpassungsbedarf spätestens im Sprint Review demonstrieren und besprechen. 
+\end{enumerate}
+
+\subsection*{[b] Sehr kurze (z.,B.\ 1 Woche) vs.\ sehr lange (z.,B.\ 8 Wochen) Sprintlängen}
+
+\begin{table}[h]
+\centering
+\renewcommand{\arraystretch}{1.15}
+\begin{tabularx}{\textwidth}{@{} l X X @{}}
+\toprule
+& \textbf{Vorteile} & \textbf{Nachteile} \\
+\midrule
+\textbf{Kurz (\(\approx\) 1 Woche)} &
+\begin{itemize}[leftmargin=*]
+  \item Sehr häufiges Feedback; schnelle Kurskorrekturen.
+  \item Frühe Risikosichtbarkeit und kurze Lernschleifen.
+  \item Hohe Fokusdisziplin auf kleine, klar geschnittene Inkremente.
+  \item Regelmäßige Lieferbarkeit und verlässlicher Takt.
+\end{itemize}
+&
+\begin{itemize}[leftmargin=*]
+  \item Relativ hoher Event-Overhead (Planning/Review/Retrospektive) im Verhältnis zur Umsetzung.
+  \item Gefahr von zu kleinteiligen Stories bzw.\ Stückelung.
+  \item Mehr Planungsdruck; häufigere Schätz-/Refinement-Zyklen.
+\end{itemize}
+\\
+\midrule
+\textbf{Lang (\(\approx\) 8 Wochen)} &
+\begin{itemize}[leftmargin=*]
+  \item Weniger „Ceremony“-Overhead pro Arbeitswoche.
+  \item Mehr Zeit für komplexe Features innerhalb eines Sprints.
+  \item Weniger Kontextwechsel durch selteneres Planen/Reviewen.
+\end{itemize}
+&
+\begin{itemize}[leftmargin=*]
+  \item Weniger Feedback; Risiken werden später sichtbar.
+  \item Größere Batches/WIP $\rightarrow$ spätere Integration, höhere Fehlerrisiken.
+  \item Geringere Agilität; Scope Creep wird später erkannt.
+\end{itemize}
+\\
+\bottomrule
+\end{tabularx}
+\caption{Vier-Felder-Tafel: kurze vs.\ lange Sprintlängen.}
+\end{table}
+
+\section*{Aufgabe 4 - UML-Klassendiagramm/Zustandsdiagramm: Stapelspeicher}
 
 \end{document}
