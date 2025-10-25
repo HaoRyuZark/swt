@@ -71,7 +71,7 @@
 % -----------------------------
 \pagestyle{fancy}
 \fancyhead[l]{Gruppe 12}
-\fancyhead[c]{SWT \#3}
+\fancyhead[c]{SWT \#4}
 \fancyhead[r]{\today}
 \fancyfoot[c]{\thepage}
 \renewcommand{\headrulewidth}{0.2pt}
@@ -80,32 +80,79 @@
 % Etwas mehr Flexibilität beim Zeilenumbruch
 \emergencystretch=1.5em
 
+
+\graphicspath{{./resources/images_4/}}
+
 \begin{document}
+
+\section*{A1 Test Driven Development}
+
+Testfälle für das Steuerungssystem einer Lampe.
+
+\begin{itemize}
+
+    \item \textbf{T1: Ein- und Ausschalten:}  
+    Die Lampe soll auf Befehl ein- und ausgeschaltet werden können.
+
+    \item \textbf{T2: Counter-Mock:}  
+    Verwende ein Mock-Objekt für die Uhr, das so konfiguriert werden kann, 
+    dass Stunden als Sekunden simuliert werden. Bereite anschließend eine Reihe 
+    von Operationen vor, die zu bestimmten Zeitpunkten ausgeführt werden sollen 
+    (z.\,B. einfache Additionen). Überprüfe, ob die korrekte Anzahl von Operationen 
+    ausgeführt wurde.
+
+    \item \textbf{T3: Synchronisation:}  
+    Überprüfe, ob sich das \texttt{TimeTracking}-Objekt korrekt mit der Systemuhr 
+    des Rechners synchronisiert.
+
+    \item \textbf{T4: Test mit Mock-Objekt:}  
+    Simuliere den Fall, in dem die Lampe mit dem Mock-Objekt gesteuert wird.
+
+    \item \textbf{T5: Test mit TimeTracking-Objekt:}  
+    Teste die Lampe im realen Anwendungsfall mit dem \texttt{TimeTracking}-Objekt.
+
+\end{itemize}
 
 \section*{A2 Scrum}
 
 \subsection*{[a] Vorgehen in zwei Situationen während des Sprints}
 
 \paragraph{Fall 1: Sprintziel und alle User Stories sind \emph{vorzeitig} erfüllbar.}
+
 \begin{enumerate}
+
   \item \textbf{Sprint nicht verlängern oder verkürzen} (Timeboxing beibehalten): Die Sprintdauer ist fix und wird nicht angepasst; nur Ereignisse dürfen enden, sobald ihr Zweck erfüllt ist.
+  
   \item \textbf{Mit dem Product Owner (PO) \emph{Scope neu vereinbaren}:} Das Dev-Team kann, falls sinnvoll, weitere gut vorbereitete Product-Backlog-Einträge (DoR erfüllt) in den Sprint \emph{ziehen}, sofern das Sprintziel nicht gefährdet wird. Inhalt und Umfang des Sprints dürfen mit dem PO neu vereinbart werden.
+
   \item \textbf{Weitere Inkremente liefern:} Mehrere Inkremente pro Sprint sind möglich; vorzeitige Lieferung ist erlaubt, solange die \emph{Definition of Done} eingehalten wird.
+  
   \item \textbf{Qualität stärken \& Schulden abbauen:} Falls keine zusätzlichen, wertvollen Stories verfügbar sind: Refactoring, Testausbau und Dokumentation gemäß DoD priorisieren.
+
   \item \textbf{Sprintabbruch nur in Ausnahmefällen:} Wird das Sprintziel obsolet, kann ausschließlich der PO den Sprint abbrechen.
+
 \end{enumerate}
 
 \paragraph{Fall 2: Sprintziel und User Stories sind \emph{sehr wahrscheinlich} nicht rechtzeitig erfüllbar.}
+
 \begin{enumerate}
+
   \item \textbf{Transparenz \& Re-Planung im Daily Scrum:} Fortschritt und Hindernisse offenlegen; Plan anpassen, um das Sprintziel bestmöglich zu erreichen.
+  
   \item \textbf{Scope mit dem PO neu verhandeln:} Umfang des Sprint Backlogs \emph{reduzieren} (z.\,B.\ niedere Prioritäten verschieben), ohne das Sprintziel oder Qualitätsansprüche zu gefährden. \emph{Qualität nimmt nicht ab}.
+
   \item \textbf{Impediments beseitigen lassen:} Der Scrum Master unterstützt aktiv beim Entfernen von Hindernissen.
+  
   \item \textbf{DoD nicht aufweichen:} Keine Abstriche bei Qualitätskriterien; unvollständige Arbeit bleibt \enquote{nicht fertig} und wird transparent gemacht.
+  
   \item \textbf{Keine Sprintverlängerung und kein \enquote{Personen nachschieben}:} Die Sprintlänge bleibt fix; zusätzliches Personal macht späte Projekte oft noch später (Brooks’sches Gesetz).
+  
   \item \textbf{Stakeholder-Einbindung:} Ergebnisse und Anpassungsbedarf spätestens im Sprint Review demonstrieren und besprechen.
+
 \end{enumerate}
 
 \newpage
+
 \subsection*{[b] Sehr kurze (z.\,B.\ 1 Woche) vs.\ sehr lange (z.\,B.\ 8 Wochen) Sprintlängen}
 
 \begin{table}[h]
@@ -147,6 +194,49 @@
 \end{tabularx}
 \caption{Vier-Felder-Tafel: kurze vs.\ lange Sprintlängen.}
 \end{table}
+
+\section*{A3 Smart Phone State UML}
+ 
+\begin{plantuml}
+@startuml
+title UML-Zustandsdiagramm: Smartphone-Steuerung
+
+[*] --> Ausgeschaltet : Start
+
+state Ausgeschaltet
+
+state Normal 
+
+state Energiesparen
+
+state Standby
+
+Ausgeschaltet -down-> Normal : AnAus_Taste_drücken
+
+Normal -up-> Ausgeschaltet : AnAus_Taste_drücken
+
+Normal -down-> Energiesparen : [nach 15s Inaktivität]
+
+Energiesparen -up-> Normal : Home_Taste_drücken
+
+Energiesparen -down-> Standby : [nach 60s]
+
+Standby -up-> Energiesparen : Home_Taste_drücken
+
+Normal -left-> Normal : Home_Taste_drücken\noder Bildschirmgeste
+
+Ausgeschaltet -right-> [*] : Ende
+
+@enduml
+  
+\end{plantuml}
+
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=\linewidth, height=0.6\textheight,keepaspectratio]{resources/images_4/3.png}
+  \end{figure}
+
 
 \section*{Aufgabe 4 - UML-Klassendiagramm/Zustandsdiagramm: Stapelspeicher}
 
@@ -212,6 +302,5 @@ Full --> Full   : peek()\n[count > 0]\n/ return top
 Empty --> [*] : dispose()
 @enduml
 \end{plantuml}
-
 
 \end{document}
