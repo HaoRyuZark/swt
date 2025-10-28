@@ -100,6 +100,93 @@ Common Risks von CD:
 
 \end{itemize}
 
+\section*{A3 Online-Reservierungssystem für Impfungen}
+\begin{plantuml}
+@startuml
+title Online-Reservierungssystem für Impfungen – Nachrichtenfluss (Patient ↔ Web-Anwendung ↔ Dienste)
+
+' ——— ISO/UML-nahe Darstellungseinstellungen ———
+hide footbox
+autonumber
+skinparam shadowing false
+skinparam monochrome true
+skinparam defaultFontName Arial
+skinparam ArrowThickness 1
+skinparam ParticipantBorderColor Black
+skinparam ParticipantBackgroundColor White
+skinparam ActorBorderColor Black
+skinparam ActorBackgroundColor White
+skinparam SequenceLifeLineBorderColor Black
+skinparam SequenceLifeLineBackgroundColor White
+skinparam NoteBackgroundColor White
+skinparam sequence {
+  MessageAlign left
+  ParticipantPadding 10
+  BoxPadding 10
+}
+
+actor "Patient" as P
+participant "Web-Anwendung\n<<boundary/GUI>>" as GUI
+participant "Identitätsmanagement\n<<service>>" as IDP
+participant "Termin-Verwaltungssystem\n<<service>>" as SCHED
+
+' ——— Login ———
+P -> GUI : Seite aufrufen &\nAnmeldedaten eingeben (Benutzername, Passwort)
+activate GUI
+GUI -> IDP : validateCredentials(benutzername, passwort)
+activate IDP
+
+alt Ungültige Anmeldedaten
+  IDP --> GUI : authFailed
+  deactivate IDP
+  GUI -> P : Passwort-Reset anbieten
+  GUI -> IDP : initiatePasswordReset(benutzername)
+  deactivate GUI
+else Gültige Anmeldedaten
+  IDP --> GUI : authOK(nutzerId)
+  deactivate IDP
+
+  ' ——— Tage abfragen ———
+  GUI -> SCHED : getAvailableDays()
+  activate SCHED
+  SCHED --> GUI : tage[]
+  deactivate SCHED
+  GUI -> P : Mögliche Tage anzeigen
+  P -> GUI : Tag auswählen (tag)
+
+  ' ——— Uhrzeiten abfragen ———
+  GUI -> SCHED : getAvailableTimes(tag)
+  activate SCHED
+  SCHED --> GUI : uhrzeiten[]
+  deactivate SCHED
+  GUI -> P : Mögliche Uhrzeiten anzeigen
+  P -> GUI : Uhrzeit wählen & Buchung bestätigen (zeit)
+
+  ' ——— Termin reservieren + Kalender ———
+  GUI -> SCHED : reserveAppointment(tag, zeit, nutzerId)
+  activate SCHED
+  SCHED --> GUI : reservationConfirmed(terminId, details)
+  deactivate SCHED
+
+  GUI -> IDP : addAppointmentToCalendar(terminId, nutzerId, details)
+  activate IDP
+  IDP --> GUI : calendarUpdated
+
+  opt E-Mail-Benachrichtigung angefordert
+    GUI -> IDP : sendEmailConfirmation(nutzerEmail, details)
+    IDP --> P : E-Mail mit Termindaten
+  end
+  deactivate IDP
+
+  GUI -> P : Buchungsbestätigung anzeigen
+  deactivate GUI
+end
+
+@enduml
+  
+\end{plantuml}
+
+
 \section*{A2 Klassich oder Agil}
 
 Für ein Projekt im medizinischen Bereich oder in anderen kritischen Bereichen sollte Scrum nicht verwendet werden. Stattdessen sollte klassisch 
