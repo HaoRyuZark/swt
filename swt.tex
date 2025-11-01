@@ -115,6 +115,8 @@ Unternehmens entstanden ist.
 
 \newpage
 \section*{A3 Online-Reservierungssystem für Impfungen}
+% Verwende unterschiedliche Jobnamen, damit PlantUML verschiedene Dateinamen erzeugt
+\renewcommand{\PlantUMLJobname}{swt-a3}
 \begin{plantuml}
 @startuml
 title Online-Reservierungssystem für Impfungen – Nachrichtenfluss (Patient ↔ Web-Anwendung ↔ Dienste)
@@ -203,6 +205,76 @@ end
 
 
 \section*{A4 Auto starten}
+% Eigener Jobname für das zweite Diagramm, sonst wird die PNG überschrieben
+\renewcommand{\PlantUMLJobname}{swt-a4}
+\begin{plantuml}
+  
+@startuml
+title Start eines Autos – UML-Sequenzdiagramm
+
+' ——— ISO/UML-nahe Darstellungseinstellungen ———
+hide footbox
+autonumber
+skinparam shadowing false
+skinparam monochrome true
+skinparam defaultFontName Arial
+skinparam ArrowThickness 1
+skinparam ParticipantBorderColor Black
+skinparam ParticipantBackgroundColor White
+skinparam ActorBorderColor Black
+skinparam ActorBackgroundColor White
+skinparam SequenceLifeLineBorderColor Black
+skinparam SequenceLifeLineBackgroundColor White
+skinparam NoteBackgroundColor White
+skinparam sequence {
+  MessageAlign left
+  ParticipantPadding 10
+  BoxPadding 10
+}
+
+'— Lifelines (Instanzen mit Typ) —
+participant "App" as App
+participant "myCar: Car" as myCar
+participant "battery: Battery" as battery
+participant "engine: Engine" as engine
+participant "oilSensor: OilSensor" as oilSensor
+
+'— Gefundene Nachricht an main (ohne Parameter) —
+[-> App : main() : void
+
+'— Konstruktion des Autos und seiner Komponenten —
+create myCar
+App -> myCar : «create» Car() : Car
+
+create battery
+myCar -> battery : «create» Battery() : Battery
+
+create engine
+myCar -> engine : «create» Engine() : Engine
+
+create oilSensor
+engine -> oilSensor : «create» OilSensor() : OilSensor
+
+'— Startvorbereitung —
+App -> myCar : prepareStart() : boolean
+
+'— Aufrufe innerhalb von prepareStart() —
+myCar -> engine : isReady() : boolean
+myCar -> battery : getChargeLevel() : double
+
+alt [isReady() == true AND getChargeLevel() >= 0.1]
+  myCar -> engine : start() : void
+else [sonst]
+  ' keine weiteren Aufrufe
+end
+
+' Hinweis: Die Konsolen-Ausgabe der App nach der Rückgabe von prepareStart()
+' wird gemäß Aufgabenstellung nicht modelliert.
+
+@enduml
+
+
+\end{plantuml}
 
 
 \end{document}
