@@ -84,6 +84,8 @@
 
 \section*{A1 Git}
 
+\textbf{Beginner:}
+
 \begin{itemize}
   
   \item git init 
@@ -94,7 +96,7 @@
 
   \item git init, git add 
 
-  \item git commit -m "Ahhhhhhhhhhh"
+  \item git commit -m Ahhhhhhhhhhh
 
   \item git rm temp.txt 
 
@@ -113,6 +115,42 @@
   \item git add ., git commit -m aaa, git push -u origin main
 
   \item git checkout -b 69, git push -u origin 69 
+
+\end{itemize}
+
+\textbf{Advanced:}
+
+\begin{itemize}
+    
+  \item git add .
+
+  \item git checkout -b develop,  git switch feature, git merge develop 
+
+  \item git switch develop, git merge main 
+  
+  \item git merge --abort
+
+  \item git switch -c feature/user-auth, git add ., git commit, git push -u origin main, git switch main, git merge feature/user-auth 
+
+  \item git switch -c hotfix/security, git add., git commit -m aa, git switch main, git merge hotfix/security-patch
+
+  \item git switch -c release/2.0.0, git add ., git commit -m "Prepare release 2.0.0", git switch main, git merge release/2.0.0, git tag v2.0.0
+
+  \item git pull
+
+  \item git add /src/auth/login.js, git commit -m "Improve password validation requirements, git pull origin main, git add ., git commit -m "Merge Sarah's email validation with my password improvements"
+
+  \item git switch -c feature/password-reset,git add ., git commit -m "Add password reset functionality", git push origin feature/password-reset
+
+  \item 3x(git reset --soft) 
+
+  \item  3x(git reset --soft)
+
+  \item git log, git reset 
+
+  \item git switch -c hotfix, git switch -c feature, git stash pop
+
+  \item git stash, git switch main, git switch -c feature, git switch feature/old-task, git stash pop
 
 \end{itemize}
 
