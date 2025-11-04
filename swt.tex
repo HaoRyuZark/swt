@@ -82,199 +82,55 @@
 
 \begin{document}
 
-\section*{A1 Continuous Deployment}
-
-Common Risks von CD: 
+\section*{A1 Git}
 
 \begin{itemize}
+  
+  \item git init 
 
-\item Falls das Test-Environment nicht schnell angepasst werden kann, kann es beispielsweise zur wiederholten Auslieferung fehlerhafter Software kommen, wodurch sich Bugs akkumulieren. Dies kann zu einem erheblichen Problem werden, insbesondere wenn diese Bugs aus aufeinander aufbauenden Features entstehen.
+  \item git status 
 
-\item Sollte Malware-Code infolge eines Angriffs in das Projekt gelangen, sind die Kunden schneller betroffen als bei Continuous Delivery, da die Auslieferungen häufiger stattfinden.
+  \item git clone it clone https://github.com/user/repo.git, cd repo
 
-\item Ein Fehler in der Pipeline – insbesondere im Bereich der Auslieferung von Artefakten – kann durch fehlerhafte Konfigurationen ebenfalls zu einer schnellen Verbreitung von Fehlern in den Kundensystemen führen.
+  \item git init, git add 
+
+  \item git commit -m "Ahhhhhhhhhhh"
+
+  \item git rm temp.txt 
+
+  \item git branch -a
+
+  \item git branch feature, git switch -c feature 
+  
+  \item git switch feature 
+
+  \item git checkout feature 
+
+  \item git checkout -b feature
+
+  \item git remote add mom aaa
+
+  \item git add ., git commit -m aaa, git push -u origin main
+
+  \item git checkout -b 69, git push -u origin 69 
 
 \end{itemize}
 
-\section*{A2 Klassich oder Agil}
 
-Für ein Projekt im medizinischen Bereich oder in anderen kritischen Bereichen sollte Scrum nicht verwendet werden. Stattdessen sollte klassisch 
-vorgegangen werden.Die Gründe für diese Entscheidung sind, dass sowohl die Daten als auch die Tätigkeiten in diesen Gebieten 
-hochsensibel sind. Außerdem deutet die Beschreibung des Dienstes auf die Digitalisierung eines bereits vorhandenen, funktionierenden Systems mit fest geplanten Funktionen hin. 
-In einem solchen Fall kann die Agilität von Scrum nicht wirklich hilfreich sein, da die Features des Produkts von Anfang an klar definiert sind.
+\section*{A2 Herausforderungen}
 
-In der Medizin spielt auch die juristische Schuldfrage eine wesentliche Rolle. Da in Scrum die Verantwortlichkeit nicht besonders stark berücksichtigt wird, kann dies im 
-Fall eines kritischen Fehlers im System zu juristischen Problemen für Arztpraxen und Krankenhäuser führen – auch dann, wenn das Problem tatsächlich auf Seiten der Entwickler oder des 
-Unternehmens entstanden ist.
+\begin{itemize}
 
-\begin{figure}[H]
-    \centering
-    \includegraphics[width=0.3\textwidth]{technical_dept.jpeg}
-    \caption{Vergleich klassisches Vorgehen vs. Scrum}
-\end{figure}
+  \item a) 
 
-\newpage
-\section*{A3 Online-Reservierungssystem für Impfungen}
-% Verwende unterschiedliche Jobnamen, damit PlantUML verschiedene Dateinamen erzeugt
-\renewcommand{\PlantUMLJobname}{swt-a3}
-\begin{plantuml}
-@startuml
-title Online-Reservierungssystem für Impfungen – Nachrichtenfluss (Patient ↔ Web-Anwendung ↔ Dienste)
+  \item b) 
 
-' ——— ISO/UML-nahe Darstellungseinstellungen ———
-hide footbox
-autonumber
-skinparam shadowing false
-skinparam monochrome true
-skinparam defaultFontName Arial
-skinparam ArrowThickness 1
-skinparam ParticipantBorderColor Black
-skinparam ParticipantBackgroundColor White
-skinparam ActorBorderColor Black
-skinparam ActorBackgroundColor White
-skinparam SequenceLifeLineBorderColor Black
-skinparam SequenceLifeLineBackgroundColor White
-skinparam NoteBackgroundColor White
-skinparam sequence {
-  MessageAlign left
-  ParticipantPadding 10
-  BoxPadding 10
-}
+  \item c) 
 
-actor "Patient" as P
-participant "Web-Anwendung\n<<boundary/GUI>>" as GUI
-participant "Identitätsmanagement\n<<service>>" as IDP
-participant "Termin-Verwaltungssystem\n<<service>>" as SCHED
+  \item d) 
 
-' ——— Login ———
-P -> GUI : Seite aufrufen &\nAnmeldedaten eingeben (Benutzername, Passwort)
-activate GUI
-GUI -> IDP : validateCredentials(benutzername, passwort)
-activate IDP
+\end{itemize}
 
-alt Ungültige Anmeldedaten
-  IDP --> GUI : authFailed
-  deactivate IDP
-  GUI -> P : Passwort-Reset anbieten
-  GUI -> IDP : initiatePasswordReset(benutzername)
-  deactivate GUI
-else Gültige Anmeldedaten
-  IDP --> GUI : authOK(nutzerId)
-  deactivate IDP
-
-  ' ——— Tage abfragen ———
-  GUI -> SCHED : getAvailableDays()
-  activate SCHED
-  SCHED --> GUI : tage[]
-  deactivate SCHED
-  GUI -> P : Mögliche Tage anzeigen
-  P -> GUI : Tag auswählen (tag)
-
-  ' ——— Uhrzeiten abfragen ———
-  GUI -> SCHED : getAvailableTimes(tag)
-  activate SCHED
-  SCHED --> GUI : uhrzeiten[]
-  deactivate SCHED
-  GUI -> P : Mögliche Uhrzeiten anzeigen
-  P -> GUI : Uhrzeit wählen & Buchung bestätigen (zeit)
-
-  ' ——— Termin reservieren + Kalender ———
-  GUI -> SCHED : reserveAppointment(tag, zeit, nutzerId)
-  activate SCHED
-  SCHED --> GUI : reservationConfirmed(terminId, details)
-  deactivate SCHED
-
-  GUI -> IDP : addAppointmentToCalendar(terminId, nutzerId, details)
-  activate IDP
-  IDP --> GUI : calendarUpdated
-
-  opt E-Mail-Benachrichtigung angefordert
-    GUI -> IDP : sendEmailConfirmation(nutzerEmail, details)
-    IDP --> P : E-Mail mit Termindaten
-  end
-  deactivate IDP
-
-  GUI -> P : Buchungsbestätigung anzeigen
-  deactivate GUI
-end
-
-@enduml
-  
-\end{plantuml}
-
-
-
-\section*{A4 Auto starten}
-% Eigener Jobname für das zweite Diagramm, sonst wird die PNG überschrieben
-\renewcommand{\PlantUMLJobname}{swt-a4}
-\begin{plantuml}
-  
-@startuml
-title Start eines Autos – UML-Sequenzdiagramm
-
-' ——— ISO/UML-nahe Darstellungseinstellungen ———
-hide footbox
-autonumber
-skinparam shadowing false
-skinparam monochrome true
-skinparam defaultFontName Arial
-skinparam ArrowThickness 1
-skinparam ParticipantBorderColor Black
-skinparam ParticipantBackgroundColor White
-skinparam ActorBorderColor Black
-skinparam ActorBackgroundColor White
-skinparam SequenceLifeLineBorderColor Black
-skinparam SequenceLifeLineBackgroundColor White
-skinparam NoteBackgroundColor White
-skinparam sequence {
-  MessageAlign left
-  ParticipantPadding 10
-  BoxPadding 10
-}
-
-'— Lifelines (Instanzen mit Typ) —
-participant "App" as App
-participant "myCar: Car" as myCar
-participant "battery: Battery" as battery
-participant "engine: Engine" as engine
-participant "oilSensor: OilSensor" as oilSensor
-
-'— Gefundene Nachricht an main (ohne Parameter) —
-[-> App : main() : void
-
-'— Konstruktion des Autos und seiner Komponenten —
-create myCar
-App -> myCar : «create» Car() : Car
-
-create battery
-myCar -> battery : «create» Battery() : Battery
-
-create engine
-myCar -> engine : «create» Engine() : Engine
-
-create oilSensor
-engine -> oilSensor : «create» OilSensor() : OilSensor
-
-'— Startvorbereitung —
-App -> myCar : prepareStart() : boolean
-
-'— Aufrufe innerhalb von prepareStart() —
-myCar -> engine : isReady() : boolean
-myCar -> battery : getChargeLevel() : double
-
-alt [isReady() == true AND getChargeLevel() >= 0.1]
-  myCar -> engine : start() : void
-else [sonst]
-  ' keine weiteren Aufrufe
-end
-
-' Hinweis: Die Konsolen-Ausgabe der App nach der Rückgabe von prepareStart()
-' wird gemäß Aufgabenstellung nicht modelliert.
-
-@enduml
-
-
-\end{plantuml}
-
+\includegraphics{orly_H6.png}
 
 \end{document}
