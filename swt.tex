@@ -123,17 +123,31 @@
 
 \section*{A2 Herausforderungen}
 
-\begin{itemize}
+\textbf{[a]}  
+Datei zum letzten Commit hinzufügen, ohne neuen Commit im Verlauf zu erzeugen:
+\begin{verbatim}
+git add <datei>
+git commit --amend --no-edit
+\end{verbatim}
 
-  \item a) 
+\textbf{[b]}  
+Commit aus dem lokalen Verlauf vollständig löschen:
+\begin{verbatim}
+git reset --hard HEAD~1
+\end{verbatim}
 
-  \item b) 
+\textbf{[c]}  
+Letzten Commit im Remote-Repository rückgängig machen, Rücknahme bleibt sichtbar:
+\begin{verbatim}
+git revert HEAD
+git push origin <branch>
+\end{verbatim}
 
-  \item c) 
-
-  \item d) 
-
-\end{itemize}
+\textbf{[d]}  
+Unterschiede zwischen main und feature seit dem gemeinsamen Vorgänger anzeigen:
+\begin{verbatim}
+git diff main...feature
+\end{verbatim}
 
 \begin{figure}[h]
   \includegraphics{orly_H6.png}
