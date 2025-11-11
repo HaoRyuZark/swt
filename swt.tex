@@ -6,8 +6,8 @@
 \usepackage[utf8]{inputenc}
 \usepackage[T1]{fontenc}
 \usepackage[ngerman]{babel}
-\usepackage{csquotes}     % \enquote
-\usepackage{microtype}    % bessere Laufweite/Umbruch
+\usepackage{csquotes}
+\usepackage{microtype}
 \usepackage{ebgaramond}
 
 % -----------------------------
@@ -25,44 +25,17 @@
 \usepackage{mathrsfs}
 
 % -----------------------------
-% Grafiken & Plots
-% -----------------------------
-\usepackage{graphicx}
-\graphicspath{{./resources/images/}}
-\usepackage{caption}
-\usepackage{subcaption}
-\usepackage{float}
-\usepackage{pgfplots}
-\pgfplotsset{compat=1.18}
-\usepackage{tikz}
-\usetikzlibrary{calc,intersections,decorations.pathreplacing,patterns,angles,quotes,shapes,arrows,positioning,automata}
-\usepgfplotslibrary{fillbetween}
-\usepackage[output=png]{plantuml} % <— PlantUML für UML-Diagramme
-
-% -----------------------------
 % Sonstige Nützliches
 % -----------------------------
 \usepackage{enumitem}
 \usepackage{booktabs}
-\usepackage{multicol}
-\usepackage{multirow}
-\usepackage{polynom}
-\usepackage{tikz-cd}
-\usepackage{comment}
-\usepackage{fancyvrb}
-\usepackage{fancyhdr}
-\usepackage{etoolbox}
-\usepackage{listings}
-\usepackage{tkz-euclide}
-\usepackage{hyperref}
-\usepackage{siunitx}   % für circuitikz/Si-Einheiten
-\usepackage{circuitikz}
-\usepackage{bookmark}
 \usepackage{tabularx}
-\usepackage{ragged2e}  % für RaggedRight in Tabellenspalten
+\usepackage{ragged2e}
+\usepackage{fancyhdr}
+\usepackage{hyperref}
 
 % -----------------------------
-% Tabellen: neue Spaltenart (ragged) für bessere Umbrüche
+% Tabellen: neue Spaltenart
 % -----------------------------
 \newcolumntype{Y}{>{\RaggedRight\arraybackslash}X}
 
@@ -71,135 +44,276 @@
 % -----------------------------
 \pagestyle{fancy}
 \fancyhead[l]{Gruppe 12}
-\fancyhead[c]{SWT \#5}
+\fancyhead[c]{SWT \#7}
 \fancyhead[r]{\today}
 \fancyfoot[c]{\thepage}
 \renewcommand{\headrulewidth}{0.2pt}
 \setlength{\headheight}{15pt}
 
-% Etwas mehr Flexibilität beim Zeilenumbruch
 \emergencystretch=1.5em
 
 \begin{document}
 
-\section*{A1 Git}
+\section*{A1 Kano-Modell}
 
-\textbf{Beginner:}
+Für eine Pauschal-Urlaubsreise bei einem Reiseveranstalter ergeben sich folgende Faktoren gemäß dem Kano-Modell:
 
-\begin{itemize}
-  
-  \item git init 
+\subsection*{Basisfaktoren}
+Diese Faktoren werden als selbstverständlich erwartet. Ihre Abwesenheit führt zu extremer Unzufriedenheit:
 
-  \item git status 
+\begin{enumerate}
+  \item Funktionierende sanitäre Anlagen im Hotelzimmer
+  \item Saubere Bettwäsche und Handtücher
+  \item Einhaltung der gebuchten Reisedaten und Flugzeiten
+\end{enumerate}
 
-  \item git clone it clone https://github.com/user/repo.git, cd repo
+\subsection*{Leistungsfaktoren}
+Diese Faktoren werden explizit erwartet. Je besser sie erfüllt werden, desto höher die Zufriedenheit:
 
-  \item git init, git add 
+\begin{enumerate}
+  \item Qualität und Vielfalt des Essens (Buffet/Menüauswahl)
+  \item Freundlichkeit und Hilfsbereitschaft des Hotelpersonals
+  \item Lage des Hotels (Strandnähe, Infrastruktur)
+\end{enumerate}
 
-  \item git commit -m Ahhhhhhhhhhh
+\subsection*{Begeisterungsfaktoren}
+Diese Faktoren werden nicht erwartet, führen aber bei Vorhandensein zu hoher Zufriedenheit:
 
-  \item git rm temp.txt 
+\begin{enumerate}
+  \item Kostenloses Zimmer-Upgrade bei Ankunft
+  \item Überraschende Willkommensgeschenke (z.B. Obst, Champagner)
+  \item Kostenlose Ausflüge oder Wellness-Behandlungen
+\end{enumerate}
 
-  \item git branch -a
+\subsection*{Unerhebliche Faktoren}
+Diese Faktoren haben keinen signifikanten Einfluss auf die Zufriedenheit:
 
-  \item git branch feature, git switch -c feature 
-  
-  \item git switch feature 
-
-  \item git checkout feature 
-
-  \item git checkout -b feature
-
-  \item git remote add mom aaa
-
-  \item git add ., git commit -m aaa, git push -u origin main
-
-  \item git checkout -b 69, git push -u origin 69 
-
-\end{itemize}
-
-\textbf{Advanced:}
-
-\begin{itemize}
-    
-  \item git add .
-
-  \item git checkout -b develop,  git switch feature, git merge develop 
-
-  \item git switch develop, git merge main 
-  
-  \item git merge --abort
-
-  \item git switch -c feature/user-auth, git add ., git commit, git push -u origin main, git switch main, git merge feature/user-auth 
-
-  \item git switch -c hotfix/security, git add., git commit -m aa, git switch main, git merge hotfix/security-patch
-
-  \item git switch -c release/2.0.0, git add ., git commit -m "Prepare release 2.0.0", git switch main, git merge release/2.0.0, git tag v2.0.0
-
-  \item git pull
-
-  \item git add /src/auth/login.js, git commit -m "Improve password validation requirements, git pull origin main, git add ., git commit -m "Merge Sarah's email validation with my password improvements"
-
-  \item git switch -c feature/password-reset,git add ., git commit -m "Add password reset functionality", git push origin feature/password-reset
-
-  \item 3x(git reset --soft) 
-
-  \item  3x(git reset --soft)
-
-  \item git log, git reset 
-
-  \item git switch -c hotfix, git switch -c feature, git stash pop
-
-  \item git stash, git switch main, git switch -c feature, git switch feature/old-task, git stash pop
-
-\end{itemize}
-
-\begin{figure}[h]
-  \centering
-  \includegraphics[width=0.7\textwidth]{beweis.jpg}
-  \includegraphics[width=0.7\textwidth]{beweis2.png}
-\end{figure}
-
+\begin{enumerate}
+  \item Farbe der Handtücher im Zimmer
+  \item Marke des Fernsehgeräts im Zimmer
+  \item Art der Zimmerpflanzen in der Hotellobby
+\end{enumerate}
 
 \newpage
-\section*{A2 Herausforderungen}
+\section*{A2 Nutzwertanalyse}
 
-\textbf{[a]}  
-Datei zum letzten Commit hinzufügen, ohne neuen Commit im Verlauf zu erzeugen:
+\subsection*{[a] Gewichtung der Kriterien}
+
+Persönliche Gewichtung (1 = weniger wichtig, 2 = wichtig, 3 = sehr wichtig):
+
+\begin{itemize}
+  \item Reisezeiten: 2
+  \item Kosten: 3
+  \item Freizeitwert: 2
+  \item Kontakt zu Kommilitonen: 3
+  \item Kontakt zu Familie und Freunden: 2
+  \item Berufsaussichten nach Studienabschluss: 3
+\end{itemize}
+
+\subsection*{[b] und [c] Bewertung und Berechnung}
+
+\begin{table}[h]
+\centering
+\begin{tabular}{lcccc}
+\toprule
+\textbf{Kriterium} & \textbf{Gewicht} & \textbf{Aachen} & \textbf{Jülich} & \textbf{Köln} \\
+\midrule
+Reisezeiten & 2 & +3 & +1 & -1 \\
+Kosten & 3 & +2 & +3 & -2 \\
+Freizeitwert & 2 & +2 & -1 & +3 \\
+Kontakt zu Kommilitonen & 3 & +3 & +1 & +2 \\
+Kontakt zu Familie/Freunden & 2 & 0 & -1 & +2 \\
+Berufsaussichten & 3 & +3 & +1 & +3 \\
+\midrule
+\textbf{Koeffizient} & & \textbf{+38} & \textbf{+13} & \textbf{+23} \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\textbf{Berechnung der Koeffizienten:}
+
+\textbf{Aachen:}
+$2 \cdot (+3) + 3 \cdot (+2) + 2 \cdot (+2) + 3 \cdot (+3) + 2 \cdot 0 + 3 \cdot (+3) = 6 + 6 + 4 + 9 + 0 + 9 = 38$
+
+\textbf{Jülich:}
+$2 \cdot (+1) + 3 \cdot (+3) + 2 \cdot (-1) + 3 \cdot (+1) + 2 \cdot (-1) + 3 \cdot (+1) = 2 + 9 - 2 + 3 - 2 + 3 = 13$
+
+\textbf{Köln:}
+$2 \cdot (-1) + 3 \cdot (-2) + 2 \cdot (+3) + 3 \cdot (+2) + 2 \cdot (+2) + 3 \cdot (+3) = -2 - 6 + 6 + 6 + 4 + 9 = 23$
+
+\textbf{Ergebnis:} Aachen ist mit einem Koeffizienten von +38 der beste Lebensmittelpunkt, gefolgt von Köln (+23) und Jülich (+13).
+
+\newpage
+\section*{A3 User Stories: INVEST-Kriterien}
+
+Die INVEST-Kriterien lauten: \textbf{I}ndependent, \textbf{N}egotiable, \textbf{V}aluable, \textbf{E}stimable, \textbf{S}mall, \textbf{T}estable.
+
+\subsection*{[a] »Als Nutzer möchte ich mein Passwort zurücksetzen können.«}
+
+\begin{itemize}[leftmargin=2cm]
+  \item[\textbf{I}] Erfüllt – weitgehend unabhängig von anderen Features
+  \item[\textbf{N}] Erfüllt – Details wie E-Mail vs. SMS können verhandelt werden
+  \item[\textbf{V}] Erfüllt – wichtige Sicherheitsfunktion für Nutzer
+  \item[\textbf{E}] Erfüllt – Aufwand gut schätzbar
+  \item[\textbf{S}] Erfüllt – überschaubare User Story
+  \item[\textbf{T}] Erfüllt – klare Testfälle möglich
+\end{itemize}
+
+\textbf{Bewertung:} Gute User Story, erfüllt alle INVEST-Kriterien.
+
+\subsection*{[b] »Als Vertriebsmitarbeiter möchte ich neue Marketingkampagnen anlegen können, damit ich gezielt die Kundenbindung intensivieren kann.«}
+
+\begin{itemize}[leftmargin=2cm]
+  \item[\textbf{I}] Teilweise – könnte von CRM-System abhängen
+  \item[\textbf{N}] Erfüllt – Details zur Kampagnenverwaltung verhandelbar
+  \item[\textbf{V}] Erfüllt – klarer Business-Value
+  \item[\textbf{E}] Problematisch – »Marketingkampagnen anlegen« zu vage
+  \item[\textbf{S}] Problematisch – zu umfangreich, sollte aufgeteilt werden
+  \item[\textbf{T}] Teilweise – »gezielt Kundenbindung intensivieren« schwer messbar
+\end{itemize}
+
+\textbf{Bewertung:} Verbesserungsbedürftig. Story sollte kleiner und spezifischer formuliert werden.
+
+\subsection*{[c] »Als Abonnent möchte ich auf der Einstellungsseite festlegen können, ob ich alle 5, 10, 15 oder 60 Minuten über die neuesten Meldungen benachrichtigt werde, damit ich die Benachrichtigungen nach meinen Bedürfnissen konfigurieren kann.«}
+
+\begin{itemize}[leftmargin=2cm]
+  \item[\textbf{I}] Erfüllt – klar abgegrenzt
+  \item[\textbf{N}] Problematisch – zu spezifisch, Intervalle sollten verhandelbar sein
+  \item[\textbf{V}] Erfüllt – erhöht Nutzererfahrung
+  \item[\textbf{E}] Erfüllt – gut schätzbar
+  \item[\textbf{S}] Erfüllt – überschaubarer Umfang
+  \item[\textbf{T}] Erfüllt – klar testbar
+\end{itemize}
+
+\textbf{Bewertung:} Weitgehend gut, aber zu detailliert formuliert. Sollte flexibler sein (z.B. »Benachrichtigungsintervall konfigurieren«).
+
+\subsection*{[d] »Als Bewerber möchte ich meine persönlichen Daten löschen können, damit die Datenschutzgrundverordnung erfüllt wird.«}
+
+\begin{itemize}[leftmargin=2cm]
+  \item[\textbf{I}] Erfüllt – eigenständige Funktion
+  \item[\textbf{N}] Erfüllt – Implementierungsdetails verhandelbar
+  \item[\textbf{V}] Erfüllt – rechtliche Anforderung und Nutzerrecht
+  \item[\textbf{E}] Erfüllt – Aufwand schätzbar
+  \item[\textbf{S}] Erfüllt – klar umrissene Story
+  \item[\textbf{T}] Erfüllt – gut testbar
+\end{itemize}
+
+\textbf{Bewertung:} Gute User Story, erfüllt alle INVEST-Kriterien. Hinweis: DSGVO-Erfüllung ist technische Begründung, könnte durch Nutzerperspektive ersetzt werden.
+
+\subsection*{[e] »Als Administrator möchte ich das Authentifizierungsverfahren wechseln können, damit ich zukünftige Änderungen am Identitätsmanagement berücksichtigen kann.«}
+
+\begin{itemize}[leftmargin=2cm]
+  \item[\textbf{I}] Problematisch – betrifft Kern-Architektur, viele Abhängigkeiten
+  \item[\textbf{N}] Teilweise – sehr technisch, wenig Verhandlungsspielraum
+  \item[\textbf{V}] Erfüllt – technische Flexibilität wertvoll
+  \item[\textbf{E}] Problematisch – sehr komplex, schwer zu schätzen
+  \item[\textbf{S}] Nicht erfüllt – zu groß, eher ein Epic
+  \item[\textbf{T}] Schwierig – komplexe Testszenarien
+\end{itemize}
+
+\textbf{Bewertung:} Ungeeignet als User Story. Zu umfangreich und technisch. Sollte in kleinere Stories aufgeteilt werden (z.B. »OAuth-Support hinzufügen«, »2FA implementieren«).
+
+\newpage
+\section*{A4 JUnit: Euklidischer Algorithmus}
+
+Beispielhafte Implementierung der JUnit-Tests für den Euklidischen Algorithmus:
+
 \begin{verbatim}
-git add <datei>
-git commit --amend --no-edit
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.CsvSource;
+import static org.junit.jupiter.api.Assertions.*;
+import java.util.Random;
+
+public class EuclideanAlgorithmTest {
+    
+    private final Random random = new Random();
+    
+    // [a] ggT(0, n) = ggT(n, 0) = |n|
+    @Test
+    public void testGcdWithZero() {
+        for (int i = 0; i < 100; i++) {
+            int n = random.nextInt(1000) - 500; // -500 bis 499
+            assertEquals(Math.abs(n), gcd(0, n));
+            assertEquals(Math.abs(n), gcd(n, 0));
+        }
+    }
+    
+    // [b] ggT(1, n) = ggT(n, 1) = 1
+    @Test
+    public void testGcdWithOne() {
+        for (int i = 0; i < 100; i++) {
+            int n = random.nextInt(1000);
+            assertEquals(1, gcd(1, n));
+            assertEquals(1, gcd(n, 1));
+        }
+    }
+    
+    // [c] ggT(n, m) = ggT(m, n) - Kommutativität
+    @Test
+    public void testGcdCommutativity() {
+        for (int i = 0; i < 100; i++) {
+            int n = random.nextInt(1000) + 1;
+            int m = random.nextInt(1000) + 1;
+            assertEquals(gcd(n, m), gcd(m, n));
+        }
+    }
+    
+    // [d] ggT(n, n) = |n|
+    @Test
+    public void testGcdSameNumber() {
+        for (int i = 0; i < 100; i++) {
+            int n = random.nextInt(1000) - 500;
+            assertEquals(Math.abs(n), gcd(n, n));
+        }
+    }
+    
+    // [e] ggT(n·r, m·r) = ggT(n, m)·|r|
+    @Test
+    public void testGcdMultiplicativity() {
+        for (int i = 0; i < 100; i++) {
+            int n = random.nextInt(100) + 1;
+            int m = random.nextInt(100) + 1;
+            int r = random.nextInt(10) + 1;
+            int expected = gcd(n, m) * Math.abs(r);
+            int actual = gcd(n * r, m * r);
+            assertEquals(expected, actual);
+        }
+    }
+    
+    // Parametrisierter Test mit konkreten Beispielen
+    @ParameterizedTest
+    @CsvSource({
+        "48, 18, 6",
+        "100, 50, 50",
+        "17, 19, 1",
+        "270, 192, 6",
+        "1071, 462, 21"
+    })
+    public void testGcdWithKnownValues(int a, int b, int expected) {
+        assertEquals(expected, gcd(a, b));
+    }
+    
+    // Hilfsmethode: Euklidischer Algorithmus
+    private int gcd(int a, int b) {
+        a = Math.abs(a);
+        b = Math.abs(b);
+        while (b != 0) {
+            int temp = b;
+            b = a % b;
+            a = temp;
+        }
+        return a;
+    }
+}
 \end{verbatim}
 
-\textbf{[b]}  
-Commit aus dem lokalen Verlauf vollständig löschen:
-\begin{verbatim}
-git reset --hard HEAD~1
-\end{verbatim}
-
-\textbf{[c]}  
-Letzten Commit im Remote-Repository rückgängig machen, Rücknahme bleibt sichtbar:
-\begin{verbatim}
-git revert HEAD
-git push origin <branch>
-\end{verbatim}
-
-\textbf{[d]}  
-Unterschiede zwischen main und feature seit dem gemeinsamen Vorgänger anzeigen:
-\begin{verbatim}
-git diff main...feature
-\end{verbatim}
-
-\begin{figure}[h]
-  \centering
-  \begin{minipage}{0.48\textwidth}
-    \centering
-    \includegraphics[width=\textwidth]{orly_H6.png}
-  \end{minipage}\hfill
-  \begin{minipage}{0.48\textwidth}
-    \centering
-    \includegraphics[width=\textwidth]{git2.png}
-  \end{minipage}
-\end{figure}
+\textbf{Hinweise zur Implementierung:}
+\begin{itemize}
+  \item Die Tests verwenden Zufallszahlen, um die mathematischen Gesetze stichprobenartig zu prüfen
+  \item Der parametrisierte Test enthält fünf konkrete Beispiele mit bekannten Ergebnissen
+  \item Die Hilfsmethode \texttt{gcd()} implementiert den Euklidischen Algorithmus
+  \item Alle Tests berücksichtigen negative Zahlen durch Verwendung von Absolutwerten
+\end{itemize}
 
 \end{document}
