@@ -33,8 +33,7 @@
 \usepackage{ragged2e}
 \usepackage{fancyhdr}
 \usepackage{hyperref}
-\usepackage{listings}
-\lstset{language=Java,basicstyle=\ttfamily\footnotesize,breaklines=true}
+\usepackage{minted}
 
 % -----------------------------
 % Tabellen: neue Spaltenart
@@ -79,7 +78,7 @@ Gefundene Nachricht: \texttt{App.execute()}.
 Die Nachrichten laufen zwischen den konkreten Klassen \texttt{App} $\rightarrow$ \texttt{AndroidForm} $\rightarrow$ \texttt{AndroidElement}; dank Factory Method entsteht keine Kreuzung Android/iOS.
 
 \subsection*{c) Java-Rumpf (Paketstruktur angedeutet)}
-\begin{lstlisting}
+\begin{minted}[fontsize=\footnotesize,breaklines,linenos]{java}
 // mobileapplication/ui/MobileElement.java
 package mobileapplication.ui;
 
@@ -195,7 +194,7 @@ public class App {
         form.render();
     }
 }
-\end{lstlisting}
+\end{minted}
 Kernideen: Factory Method (\texttt{createElement}) koppelt \texttt{App} von den konkreten OS-Klassen ab und stellt sicher, dass Form und Elemente stets zusammenpassen. Kapselung über paket-private Konstruktoren verhindert die Erzeugung konkreter Elemente außerhalb von \texttt{mobileapplication.ui}.
 
 \end{document}
