@@ -27,6 +27,7 @@
 % -----------------------------
 % Sonstige Nützliches
 % -----------------------------
+\usepackage{graphicx}
 \usepackage{enumitem}
 \usepackage{booktabs}
 \usepackage{tabularx}
@@ -58,24 +59,64 @@
 \section*{Aufgabe A1 -- Mobile Application}
 
 \subsection*{a) Klassenverband (Factory Method)}
+\paragraph{Klassen im Paket \texttt{mobileapplication.ui}}
+\begin{description}[leftmargin=*,style=nextline]
+    \item[\textbf{MobileElement} (abstrakt, Product)]
+    \begin{itemize}[leftmargin=1.5em,noitemsep,topsep=0pt]
+        \item schreibgeschütztes Attribut \texttt{title : String}
+        \item Referenz auf die zugehörige \texttt{MobileForm}
+        \item Operationen: \texttt{render()} (abstrakt), \texttt{register(MobileForm form)}, \texttt{getTitle()}
+    \end{itemize}
+
+    \item[\textbf{MobileForm} (abstrakt, Creator)]
+    \begin{itemize}[leftmargin=1.5em,noitemsep,topsep=0pt]
+        \item Aggregation von \texttt{List<MobileElement> elements} (Teile-Ganze-Beziehung)
+        \item Factory Method \texttt{createElement(String title)} (\textit{protected abstract})
+        \item konkrete Methode \texttt{addElement(String title)}: ruft \texttt{createElement}, registriert das Element bei der Form und fügt es \texttt{elements} hinzu
+        \item \texttt{render()} delegiert an \texttt{render()} aller enthaltenen Elemente
+    \end{itemize}
+
+    \item[\textbf{AndroidForm} / \textbf{IOSForm} (konkrete Creator)]
+    \begin{itemize}[leftmargin=1.5em,noitemsep,topsep=0pt]
+        \item erben von \texttt{MobileForm}
+        \item implementieren \texttt{createElement(...)} und erzeugen jeweils passende konkrete Elemente
+    \end{itemize}
+
+    \item[\textbf{AndroidElement} / \textbf{IOSElement} (konkrete Products)]
+    \begin{itemize}[leftmargin=1.5em,noitemsep,topsep=0pt]
+        \item erben von \texttt{MobileElement}
+        \item Konstruktoren mit Paket-Sicht, sodass Instanzen nur innerhalb von \texttt{mobileapplication.ui} erzeugt werden können
+        \item implementieren \texttt{render()} betriebssystemspezifisch
+    \end{itemize}
+\end{description}
+
+\paragraph{Klasse im Paket \texttt{mobileapplication}}
+\begin{description}[leftmargin=*,style=nextline]
+    \item[\textbf{App}]
+    \begin{itemize}[leftmargin=1.5em,noitemsep,topsep=0pt]
+        \item Attribut \texttt{form : MobileForm}
+        \item private Operation \texttt{getOS()} liefert \enquote{Android} oder \enquote{iOS}
+        \item private Operation \texttt{initialize()} erzeugt passende konkrete Form (\texttt{AndroidForm} oder \texttt{IOSForm}) und setzt \texttt{form}
+        \item \texttt{execute()} ruft \texttt{initialize()}, fügt drei neue Elemente über \texttt{form.addElement(...)} hinzu und ruft anschließend \texttt{form.render()}
+    \end{itemize}
+\end{description}
+
+\paragraph{UML-Beziehungen (textuelle Skizze)}
 \begin{itemize}[leftmargin=*]
-    \item \textbf{mobileapplication.ui.MobileElement} (abstract, Produkt): schreibgeschütztes Attribut \texttt{title:String}, Referenz auf \texttt{MobileForm}, Operationen \texttt{register(form)}, \texttt{render()} (abstrakt), Getter \texttt{getTitle()}.
-    \item \textbf{mobileapplication.ui.MobileForm} (abstract, Creator): Aggregiert \texttt{List<MobileElement> elements}; Factory Method \texttt{createElement(title)} (\textit{protected abstract}), konkrete Methode \texttt{addElement(title)} ruft \texttt{createElement}, registriert Element und legt es in \texttt{elements} ab; \texttt{render()} delegiert an alle Elemente.
-    \item \textbf{mobileapplication.ui.AndroidForm / IOSForm} (konkrete Creator): überschreiben \texttt{createElement}, erzeugen jeweils passendes konkretes Element.
-    \item \textbf{mobileapplication.ui.AndroidElement / IOSElement} (konkrete Product): besitzen Paket-Sicht-Konstruktor, damit Erzeugung nur über \texttt{MobileForm} möglich ist; implementieren \texttt{render()}.
-    \item \textbf{mobileapplication.App}: Attribut \texttt{form: MobileForm}; \texttt{getOS()} liefert \enquote{Android} oder \enquote{iOS}; \texttt{initialize()} legt passende konkrete Form an; \texttt{execute()} fügt drei Elemente hinzu und rendert.
+    \item \texttt{MobileElement} \texttt{$\lhd$--} \texttt{AndroidElement}, \texttt{IOSElement} (Vererbung; abstraktes Product).
+    \item \texttt{MobileForm} \texttt{$\lhd$--} \texttt{AndroidForm}, \texttt{IOSForm} (Vererbung; abstrakter Creator mit Factory Method \texttt{createElement}).
+    \item \texttt{MobileForm} \texttt{$\blacklozenge$--} \texttt{MobileElement} (Komposition über \texttt{elements}).
+    \item \texttt{App} \texttt{--} \texttt{MobileForm} (Assoziation über Attribut \texttt{form}); \texttt{App} nutzt nur die abstrakten Typen und ist nicht an konkrete OS-Klassen gekoppelt.
 \end{itemize}
-Beziehungen: \texttt{MobileForm} ist abstrakter Creator und kennt die Factory Method \texttt{createElement}; konkrete Formen liefern passende konkrete Elemente. \texttt{addElement} kapselt die Erzeugung (Konstruktoren der konkreten Elemente sind paket-privat), sodass von außen keine widersprüchlichen Kombinationen angelegt werden können. \texttt{App} nutzt nur das abstrakte Interface und bleibt vom konkreten OS entkoppelt.
 
 \subsection*{b) Sequenzdiagramm (Android)}
 Gefundene Nachricht: \texttt{App.execute()}.
-\begin{enumerate}[leftmargin=*,label=\arabic*.]
-    \item \texttt{execute()} ruft \texttt{initialize()}.
-    \item \texttt{initialize()} erzeugt \texttt{AndroidForm} und speichert sie in \texttt{form}.
-    \item Dreimal \texttt{form.addElement("...")}: Aufruf von \texttt{AndroidForm.createElement()}, Konstruktion \texttt{new AndroidElement(title)}, \texttt{register(form)}, Ablage in \texttt{elements}.
-    \item \texttt{form.render()}: iteriert über alle \texttt{AndroidElement}-Instanzen, die jeweils \texttt{render()} ausführen.
-\end{enumerate}
-Die Nachrichten laufen zwischen den konkreten Klassen \texttt{App} $\rightarrow$ \texttt{AndroidForm} $\rightarrow$ \texttt{AndroidElement}; dank Factory Method entsteht keine Kreuzung Android/iOS.
+
+\begin{figure}[htbp]
+    \centering
+    \includegraphics[width=0.9\linewidth]{SWT8-seq-plantuml.png}
+    \caption{UML-Sequenzdiagramm der Ausführung von \texttt{App.execute()} auf Android (modelliert mit PlantUML)}
+\end{figure}
 
 \subsection*{c) Java-Rumpf (Paketstruktur angedeutet)}
 \begin{minted}[fontsize=\footnotesize,breaklines,linenos]{java}
