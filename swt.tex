@@ -33,6 +33,8 @@
 \usepackage{ragged2e}
 \usepackage{fancyhdr}
 \usepackage{hyperref}
+\usepackage{listings}
+\lstset{language=Java,basicstyle=\ttfamily\footnotesize,breaklines=true}
 
 % -----------------------------
 % Tabellen: neue Spaltenart
@@ -44,7 +46,7 @@
 % -----------------------------
 \pagestyle{fancy}
 \fancyhead[l]{Gruppe 12}
-\fancyhead[c]{SWT \#7}
+\fancyhead[c]{SWT \#8}
 \fancyhead[r]{\today}
 \fancyfoot[c]{\thepage}
 \renewcommand{\headrulewidth}{0.2pt}
@@ -54,5 +56,146 @@
 
 \begin{document}
 
+\section*{Aufgabe A1 -- Mobile Application}
+
+\subsection*{a) Klassenverband (Factory Method)}
+\begin{itemize}[leftmargin=*]
+    \item \textbf{mobileapplication.ui.MobileElement} (abstract, Produkt): schreibgeschütztes Attribut \texttt{title:String}, Referenz auf \texttt{MobileForm}, Operationen \texttt{register(form)}, \texttt{render()} (abstrakt), Getter \texttt{getTitle()}.
+    \item \textbf{mobileapplication.ui.MobileForm} (abstract, Creator): Aggregiert \texttt{List<MobileElement> elements}; Factory Method \texttt{createElement(title)} (\textit{protected abstract}), konkrete Methode \texttt{addElement(title)} ruft \texttt{createElement}, registriert Element und legt es in \texttt{elements} ab; \texttt{render()} delegiert an alle Elemente.
+    \item \textbf{mobileapplication.ui.AndroidForm / IOSForm} (konkrete Creator): überschreiben \texttt{createElement}, erzeugen jeweils passendes konkretes Element.
+    \item \textbf{mobileapplication.ui.AndroidElement / IOSElement} (konkrete Product): besitzen Paket-Sicht-Konstruktor, damit Erzeugung nur über \texttt{MobileForm} möglich ist; implementieren \texttt{render()}.
+    \item \textbf{mobileapplication.App}: Attribut \texttt{form: MobileForm}; \texttt{getOS()} liefert \enquote{Android} oder \enquote{iOS}; \texttt{initialize()} legt passende konkrete Form an; \texttt{execute()} fügt drei Elemente hinzu und rendert.
+\end{itemize}
+Beziehungen: \texttt{MobileForm} ist abstrakter Creator und kennt die Factory Method \texttt{createElement}; konkrete Formen liefern passende konkrete Elemente. \texttt{addElement} kapselt die Erzeugung (Konstruktoren der konkreten Elemente sind paket-privat), sodass von außen keine widersprüchlichen Kombinationen angelegt werden können. \texttt{App} nutzt nur das abstrakte Interface und bleibt vom konkreten OS entkoppelt.
+
+\subsection*{b) Sequenzdiagramm (Android)}
+Gefundene Nachricht: \texttt{App.execute()}.
+\begin{enumerate}[leftmargin=*,label=\arabic*.]
+    \item \texttt{execute()} ruft \texttt{initialize()}.
+    \item \texttt{initialize()} erzeugt \texttt{AndroidForm} und speichert sie in \texttt{form}.
+    \item Dreimal \texttt{form.addElement("...")}: Aufruf von \texttt{AndroidForm.createElement()}, Konstruktion \texttt{new AndroidElement(title)}, \texttt{register(form)}, Ablage in \texttt{elements}.
+    \item \texttt{form.render()}: iteriert über alle \texttt{AndroidElement}-Instanzen, die jeweils \texttt{render()} ausführen.
+\end{enumerate}
+Die Nachrichten laufen zwischen den konkreten Klassen \texttt{App} $\rightarrow$ \texttt{AndroidForm} $\rightarrow$ \texttt{AndroidElement}; dank Factory Method entsteht keine Kreuzung Android/iOS.
+
+\subsection*{c) Java-Rumpf (Paketstruktur angedeutet)}
+\begin{lstlisting}
+// mobileapplication/ui/MobileElement.java
+package mobileapplication.ui;
+
+public abstract class MobileElement {
+    private final String title;
+    private MobileForm form;
+
+    protected MobileElement(String title) { // nur Paket/SUB-Klassen
+        this.title = title;
+    }
+
+    public String getTitle() { return title; }
+
+    void register(MobileForm form) { // Paket-sichtbar
+        this.form = form;
+    }
+
+    public MobileForm getForm() { return form; }
+
+    public abstract void render();
+}
+
+// mobileapplication/ui/MobileForm.java
+package mobileapplication.ui;
+
+import java.util.ArrayList;
+import java.util.List;
+
+public abstract class MobileForm {
+    private final List<MobileElement> elements = new ArrayList<>();
+
+    protected abstract MobileElement createElement(String title);
+
+    public final void addElement(String title) {
+        MobileElement element = createElement(title);
+        element.register(this);
+        elements.add(element);
+    }
+
+    public void render() {
+        elements.forEach(MobileElement::render);
+    }
+}
+
+// mobileapplication/ui/AndroidElement.java
+package mobileapplication.ui;
+
+class AndroidElement extends MobileElement {
+    AndroidElement(String title) { super(title); }
+
+    @Override
+    public void render() {
+        System.out.println("Android-Element: " + getTitle());
+    }
+}
+
+// mobileapplication/ui/IOSElement.java
+package mobileapplication.ui;
+
+class IOSElement extends MobileElement {
+    IOSElement(String title) { super(title); }
+
+    @Override
+    public void render() {
+        System.out.println("iOS-Element: " + getTitle());
+    }
+}
+
+// mobileapplication/ui/AndroidForm.java
+package mobileapplication.ui;
+
+public class AndroidForm extends MobileForm {
+    @Override
+    protected MobileElement createElement(String title) {
+        return new AndroidElement(title);
+    }
+}
+
+// mobileapplication/ui/IOSForm.java
+package mobileapplication.ui;
+
+public class IOSForm extends MobileForm {
+    @Override
+    protected MobileElement createElement(String title) {
+        return new IOSElement(title);
+    }
+}
+
+// mobileapplication/App.java
+package mobileapplication;
+
+import mobileapplication.ui.AndroidForm;
+import mobileapplication.ui.IOSForm;
+import mobileapplication.ui.MobileForm;
+
+public class App {
+    private MobileForm form;
+
+    private String getOS() {
+        return Math.random() > 0.5 ? "Android" : "iOS"; // Platzhalter
+    }
+
+    private void initialize() {
+        String os = getOS();
+        form = "Android".equals(os) ? new AndroidForm() : new IOSForm();
+    }
+
+    public void execute() {
+        initialize();
+        form.addElement("Header");
+        form.addElement("Content");
+        form.addElement("Footer");
+        form.render();
+    }
+}
+\end{lstlisting}
+Kernideen: Factory Method (\texttt{createElement}) koppelt \texttt{App} von den konkreten OS-Klassen ab und stellt sicher, dass Form und Elemente stets zusammenpassen. Kapselung über paket-private Konstruktoren verhindert die Erzeugung konkreter Elemente außerhalb von \texttt{mobileapplication.ui}.
 
 \end{document}
