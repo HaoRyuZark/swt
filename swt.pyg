@@ -1,0 +1,115 @@
+// mobileapplication/ui/MobileElement.java
+package mobileapplication.ui;
+
+public abstract class MobileElement {
+    private final String title;
+    private MobileForm form;
+
+    protected MobileElement(String title) { // nur Paket/SUB-Klassen
+        this.title = title;
+    }
+
+    public String getTitle() { return title; }
+
+    public void register(MobileForm form) {
+        this.form = form;
+    }
+
+    public MobileForm getForm() { return form; }
+
+    public abstract void render();
+}
+
+// mobileapplication/ui/MobileForm.java
+package mobileapplication.ui;
+
+import java.util.ArrayList;
+import java.util.List;
+
+public abstract class MobileForm {
+    private final List<MobileElement> elements = new ArrayList<>();
+
+    protected abstract MobileElement createElement(String title);
+
+    public final void addElement(String title) {
+        MobileElement element = createElement(title);
+        element.register(this);
+        elements.add(element);
+    }
+
+    public void render() {
+        elements.forEach(MobileElement::render);
+    }
+}
+
+// mobileapplication/ui/AndroidElement.java
+package mobileapplication.ui;
+
+class AndroidElement extends MobileElement {
+    AndroidElement(String title) { super(title); }
+
+    @Override
+    public void render() {
+        System.out.println("Android-Element: " + getTitle());
+    }
+}
+
+// mobileapplication/ui/IOSElement.java
+package mobileapplication.ui;
+
+class IOSElement extends MobileElement {
+    IOSElement(String title) { super(title); }
+
+    @Override
+    public void render() {
+        System.out.println("iOS-Element: " + getTitle());
+    }
+}
+
+// mobileapplication/ui/AndroidForm.java
+package mobileapplication.ui;
+
+public class AndroidForm extends MobileForm {
+    @Override
+    protected MobileElement createElement(String title) {
+        return new AndroidElement(title);
+    }
+}
+
+// mobileapplication/ui/IOSForm.java
+package mobileapplication.ui;
+
+public class IOSForm extends MobileForm {
+    @Override
+    protected MobileElement createElement(String title) {
+        return new IOSElement(title);
+    }
+}
+
+// mobileapplication/App.java
+package mobileapplication;
+
+import mobileapplication.ui.AndroidForm;
+import mobileapplication.ui.IOSForm;
+import mobileapplication.ui.MobileForm;
+
+public class App {
+    private MobileForm form;
+
+    private String getOS() {
+        return Math.random() > 0.5 ? "Android" : "iOS"; // Platzhalter
+    }
+
+    private void initialize() {
+        String os = getOS();
+        form = "Android".equals(os) ? new AndroidForm() : new IOSForm();
+    }
+
+    public void execute() {
+        initialize();
+        form.addElement("Header");
+        form.addElement("Content");
+        form.addElement("Footer");
+        form.render();
+    }
+}
