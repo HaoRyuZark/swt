@@ -36,6 +36,7 @@
 \usepackage{hyperref}
 \usepackage{minted}
 \usepackage{float}
+\usepackage{plantuml}
 
 % -----------------------------
 % Tabellen: neue Spaltenart
@@ -47,7 +48,7 @@
 % -----------------------------
 \pagestyle{fancy}
 \fancyhead[l]{Gruppe 12}
-\fancyhead[c]{SWT \#8}
+\fancyhead[c]{SWT \#9}
 \fancyhead[r]{\today}
 \fancyfoot[c]{\thepage}
 \renewcommand{\headrulewidth}{0.2pt}
@@ -57,192 +58,606 @@
 
 \begin{document}
 
-\section*{Aufgabe A1 -- Mobile Application}
+\section*{Aufgabenblatt 9 -- Softwaretechnik}
 
-\subsection*{a) Klassenverband (Factory Method)}
-\paragraph{Klassen im Paket \texttt{mobileapplication.ui}}
-\begin{description}[leftmargin=*,style=nextline]
-    \item[\textbf{MobileElement} (abstrakt, Product)]
-    \begin{itemize}[leftmargin=1.5em,noitemsep,topsep=0pt]
-        \item schreibgeschütztes Attribut \texttt{title : String}
-        \item Referenz auf die zugehörige \texttt{MobileForm}
-        \item Operationen: \texttt{render()} (abstrakt), \texttt{register(MobileForm form)}, \texttt{getTitle()}
-    \end{itemize}
+\subsection*{A1 Git-Lebenszyklus von Dateien (State)}
 
-    \item[\textbf{MobileForm} (abstrakt, Creator)]
-    \begin{itemize}[leftmargin=1.5em,noitemsep,topsep=0pt]
-        \item Aggregation von \texttt{List<MobileElement> elements} (Teile-Ganze-Beziehung)
-        \item Factory Method \texttt{createElement(String title)} (\textit{protected abstract})
-        \item konkrete Methode \texttt{addElement(String title)}: ruft \texttt{createElement}, registriert das Element bei der Form und fügt es \texttt{elements} hinzu
-        \item \texttt{render()} delegiert an \texttt{render()} aller enthaltenen Elemente
-    \end{itemize}
-
-    \item[\textbf{AndroidForm} / \textbf{IOSForm} (konkrete Creator)]
-    \begin{itemize}[leftmargin=1.5em,noitemsep,topsep=0pt]
-        \item erben von \texttt{MobileForm}
-        \item implementieren \texttt{createElement(...)} und erzeugen jeweils passende konkrete Elemente
-    \end{itemize}
-
-    \item[\textbf{AndroidElement} / \textbf{IOSElement} (konkrete Products)]
-    \begin{itemize}[leftmargin=1.5em,noitemsep,topsep=0pt]
-        \item erben von \texttt{MobileElement}
-        \item Konstruktoren mit Paket-Sicht, sodass Instanzen nur innerhalb von \texttt{mobileapplication.ui} erzeugt werden können
-        \item implementieren \texttt{render()} betriebssystemspezifisch
-    \end{itemize}
-\end{description}
-
-\paragraph{Klasse im Paket \texttt{mobileapplication}}
-\begin{description}[leftmargin=*,style=nextline]
-    \item[\textbf{App}]
-    \begin{itemize}[leftmargin=1.5em,noitemsep,topsep=0pt]
-        \item Attribut \texttt{form : MobileForm}
-        \item private Operation \texttt{getOS()} liefert \enquote{Android} oder \enquote{iOS}
-        \item private Operation \texttt{initialize()} erzeugt passende konkrete Form (\texttt{AndroidForm} oder \texttt{IOSForm}) und setzt \texttt{form}
-        \item \texttt{execute()} ruft \texttt{initialize()}, fügt drei neue Elemente über \texttt{form.addElement(...)} hinzu und ruft anschließend \texttt{form.render()}
-    \end{itemize}
-\end{description}
-
-\paragraph{UML-Beziehungen (textuelle Skizze)}
-\begin{itemize}[leftmargin=*]
-    \item \texttt{MobileElement} \texttt{$\lhd$--} \texttt{AndroidElement}, \texttt{IOSElement} (Vererbung; abstraktes Product).
-    \item \texttt{MobileForm} \texttt{$\lhd$--} \texttt{AndroidForm}, \texttt{IOSForm} (Vererbung; abstrakter Creator mit Factory Method \texttt{createElement}).
-    \item \texttt{MobileForm} \texttt{$\blacklozenge$--} \texttt{MobileElement} (Komposition über \texttt{elements}).
-    \item \texttt{App} \texttt{--} \texttt{MobileForm} (Assoziation über Attribut \texttt{form}); \texttt{App} nutzt nur die abstrakten Typen und ist nicht an konkrete OS-Klassen gekoppelt.
-\end{itemize}
+\subsubsection*{[a] UML-Klassendiagramm}
 
 \begin{figure}[H]
-    \centering
-    \includegraphics[width=0.9\linewidth]{SWT8-class-plantuml.png}
-    \caption{UML-Klassendiagramm für das Mobile-Application-Framework (modelliert mit PlantUML)}
+  \centering
+  \begin{plantuml}
+  @startuml
+  skinparam classAttributeIconSize 0
+  skinparam classFontSize 12
+  skinparam stereotypeFontStyle italic
+
+  interface GitState <<State>> {
+    +handle(context : GitFile, command : GitCommand) : void
+    +getName() : String
+  }
+
+  class GitFile <<Context>> {
+    -state : GitState
+    +GitFile()
+    +getState() : GitState
+    +request(command : GitCommand) : void
+    #setState(state : GitState) : void
+  }
+
+  enum GitCommand {
+    add
+    commit
+    reset
+    edit
+  }
+
+  abstract class AbstractGitState {
+    +handle(context : GitFile, command : GitCommand) : void
+    +getName() : String
+    #logTransition(context : GitFile, command : GitCommand, target : GitState) : void
+    #unsupported(command : GitCommand) : void
+  }
+
+  class UntrackedState
+  class StagedState
+  class CommittedState
+  class ModifiedState
+
+  GitState <|.. AbstractGitState
+  AbstractGitState <|-- UntrackedState
+  AbstractGitState <|-- StagedState
+  AbstractGitState <|-- CommittedState
+  AbstractGitState <|-- ModifiedState
+
+  GitFile o--> GitState
+  GitFile ..> GitCommand : «verwendet»
+
+  note right of GitFile
+    Pseudo-Start:
+    Neue Datei startet
+    im Zustand «Untracked».
+    Nur add ist erlaubt.
+  end note
+
+  @enduml
+  \end{plantuml}
+  \caption{Klassendiagramm State-Entwurfsmuster für den Git-Lebenszyklus}
 \end{figure}
 
-\subsection*{b) Sequenzdiagramm (Android)}
-Gefundene Nachricht: \texttt{App.execute()}.
+\subsubsection*{[b] Java-Implementierung der Zustände}
 
-\begin{figure}[H]
-    \centering
-    \includegraphics[width=0.9\linewidth]{SWT8-seq-plantuml.png}
-    \caption{UML-Sequenzdiagramm der Ausführung von \texttt{App.execute()} auf Android (modelliert mit PlantUML)}
-\end{figure}
-
-\subsection*{c) Java-Rumpf (Paketstruktur angedeutet)}
-\begin{minted}[fontsize=\footnotesize,breaklines,linenos]{java}
-// mobileapplication/ui/MobileElement.java
-package mobileapplication.ui;
-
-public abstract class MobileElement {
-    private final String title;
-    private MobileForm form;
-
-    protected MobileElement(String title) { // nur Paket/SUB-Klassen
-        this.title = title;
-    }
-
-    public String getTitle() { return title; }
-
-    public void register(MobileForm form) {
-        this.form = form;
-    }
-
-    public MobileForm getForm() { return form; }
-
-    public abstract void render();
+\begin{minted}[fontsize=\small]{java}
+public enum GitCommand {
+    ADD, COMMIT, RESET, EDIT
 }
 
-// mobileapplication/ui/MobileForm.java
-package mobileapplication.ui;
+public interface GitState {
 
-import java.util.ArrayList;
-import java.util.List;
+    /**
+     * Behandelt den angegebenen Befehl für die Datei im aktuellen Zustand.
+     *
+     * @param file    Kontextobjekt (Context)
+     * @param command auszuführender Git-Befehl
+     * @throws UnsupportedOperationException bei nicht erlaubtem Übergang
+     */
+    void handle(GitFile file, GitCommand command);
 
-public abstract class MobileForm {
-    private final List<MobileElement> elements = new ArrayList<>();
+    /**
+     * Name des Zustands (nur für Logging / Debugging).
+     */
+    String getName();
+}
 
-    protected abstract MobileElement createElement(String title);
+/**
+ * Context im State-Pattern.
+ */
+public class GitFile {
 
-    public final void addElement(String title) {
-        MobileElement element = createElement(title);
-        element.register(this);
-        elements.add(element);
+    private GitState state;
+
+    public GitFile() {
+        // Pseudo-Startzustand: Datei ist zunächst untracked.
+        this.state = new UntrackedState();
     }
 
-    public void render() {
-        elements.forEach(MobileElement::render);
+    void setState(GitState state) {
+        this.state = state;
+    }
+
+    public GitState getState() {
+        return state;
+    }
+
+    /**
+     * Öffentliche Schnittstelle für den Client. Delegiert an das aktuelle State-Objekt.
+     */
+    public void request(GitCommand command) {
+        state.handle(this, command);
     }
 }
 
-// mobileapplication/ui/AndroidElement.java
-package mobileapplication.ui;
+/**
+ * Gemeinsame Basisklasse für konkrete Zustände.
+ * Kapselt Logging und Fehlerbehandlung.
+ */
+abstract class AbstractGitState implements GitState {
 
-class AndroidElement extends MobileElement {
-    AndroidElement(String title) { super(title); }
+    protected void logTransition(GitFile file,
+                                 GitCommand command,
+                                 GitState targetState) {
+
+        System.out.printf("Command %-6s: %s -> %s%n",
+                command, getName(), targetState.getName());
+        file.setState(targetState);
+    }
+
+    protected void unsupported(GitCommand command) {
+        throw new UnsupportedOperationException(
+                "Command " + command + " ist im Zustand " + getName() + " nicht erlaubt.");
+    }
+}
+
+class UntrackedState extends AbstractGitState {
 
     @Override
-    public void render() {
-        System.out.println("Android-Element: " + getTitle());
+    public void handle(GitFile file, GitCommand command) {
+        switch (command) {
+            case ADD -> logTransition(file, command, new StagedState());
+            default -> unsupported(command);
+        }
     }
-}
-
-// mobileapplication/ui/IOSElement.java
-package mobileapplication.ui;
-
-class IOSElement extends MobileElement {
-    IOSElement(String title) { super(title); }
 
     @Override
-    public void render() {
-        System.out.println("iOS-Element: " + getTitle());
+    public String getName() {
+        return "Untracked";
     }
 }
 
-// mobileapplication/ui/AndroidForm.java
-package mobileapplication.ui;
+class StagedState extends AbstractGitState {
 
-public class AndroidForm extends MobileForm {
     @Override
-    protected MobileElement createElement(String title) {
-        return new AndroidElement(title);
+    public void handle(GitFile file, GitCommand command) {
+        switch (command) {
+            case COMMIT -> logTransition(file, command, new CommittedState());
+            case RESET  -> logTransition(file, command, new UntrackedState());
+            default     -> unsupported(command);
+        }
     }
-}
 
-// mobileapplication/ui/IOSForm.java
-package mobileapplication.ui;
-
-public class IOSForm extends MobileForm {
     @Override
-    protected MobileElement createElement(String title) {
-        return new IOSElement(title);
+    public String getName() {
+        return "Staged";
     }
 }
 
-// mobileapplication/App.java
-package mobileapplication;
+class CommittedState extends AbstractGitState {
 
-import mobileapplication.ui.AndroidForm;
-import mobileapplication.ui.IOSForm;
-import mobileapplication.ui.MobileForm;
-
-public class App {
-    private MobileForm form;
-
-    private String getOS() {
-        return Math.random() > 0.5 ? "Android" : "iOS"; // Platzhalter
+    @Override
+    public void handle(GitFile file, GitCommand command) {
+        switch (command) {
+            case EDIT -> logTransition(file, command, new ModifiedState());
+            default   -> unsupported(command);
+        }
     }
 
-    private void initialize() {
-        String os = getOS();
-        form = "Android".equals(os) ? new AndroidForm() : new IOSForm();
+    @Override
+    public String getName() {
+        return "Committed";
+    }
+}
+
+class ModifiedState extends AbstractGitState {
+
+    @Override
+    public void handle(GitFile file, GitCommand command) {
+        switch (command) {
+            case ADD   -> logTransition(file, command, new StagedState());
+            case RESET -> logTransition(file, command, new CommittedState());
+            default    -> unsupported(command);
+        }
     }
 
-    public void execute() {
-        initialize();
-        form.addElement("Header");
-        form.addElement("Content");
-        form.addElement("Footer");
-        form.render();
+    @Override
+    public String getName() {
+        return "Modified";
     }
 }
 \end{minted}
-Kernideen: Factory Method (\texttt{createElement}) koppelt \texttt{App} von den konkreten OS-Klassen ab und stellt sicher, dass Form und Elemente stets zusammenpassen. Kapselung über paket-private Konstruktoren verhindert die Erzeugung konkreter Elemente außerhalb von \texttt{mobileapplication.ui}.
+
+\subsubsection*{[c] Konsolenanwendung zur Ausführung der Befehlskette}
+
+\begin{minted}[fontsize=\small]{java}
+public class GitLifecycleDemo {
+
+    public static void main(String[] args) {
+        GitFile file = new GitFile();
+
+        GitCommand[] script = {
+                GitCommand.ADD,
+                GitCommand.COMMIT,
+                GitCommand.EDIT,
+                GitCommand.ADD,
+                GitCommand.RESET
+        };
+
+        for (GitCommand command : script) {
+            try {
+                file.request(command);
+            } catch (UnsupportedOperationException ex) {
+                System.err.println("Fehler: " + ex.getMessage());
+                break;
+            }
+        }
+
+        System.out.println("Endzustand: " + file.getState().getName());
+    }
+}
+\end{minted}
+
+Die tatsächlichen Git-Befehle werden nicht ausgeführt, es wird lediglich der Zustandsübergang
+geloggt und bei verbotenen Übergängen eine \texttt{UnsupportedOperationException} geworfen.
+
+% --------------------------------------------------------------------
+
+\subsection*{A2 Dateimanagement (Command \& Memento)}
+
+\subsubsection*{[a] UML-Klassendiagramm}
+
+\begin{figure}[H]
+  \centering
+  \begin{plantuml}
+  @startuml
+  skinparam classAttributeIconSize 0
+  skinparam classFontSize 12
+  skinparam stereotypeFontStyle italic
+
+  class File <<Originator>> {
+    -name : String
+    -path : String
+    -created : java.time.LocalDateTime
+    -readOnly : boolean
+    +File(name : String, path : String)
+    +getName() : String
+    +getPath() : String
+    +getCreated() : LocalDateTime
+    +isReadOnly() : boolean
+    +setName(name : String) : void
+    +setPath(path : String) : void
+    +setReadOnly(readOnly : boolean) : void
+    +createBackup() : Backup
+    +restoreBackup(backup : Backup) : void
+  }
+
+  class Backup <<Memento>> {
+    -name : String
+    -path : String
+    -created : java.time.LocalDateTime
+    -readOnly : boolean
+    +getName() : String
+    +getPath() : String
+    +getCreated() : LocalDateTime
+    +isReadOnly() : boolean
+  }
+
+  abstract class FileCommand <<Command, Caretaker>> {
+    -file : File
+    -backup : Backup
+    #FileCommand(file : File)
+    +execute() : void
+    +restore() : void
+    #getFile() : File
+    {abstract} #doExecute() : void
+  }
+
+  class RenameCommand <<ConcreteCommand>> {
+    -newName : String
+    +RenameCommand(file : File, newName : String)
+    #doExecute() : void
+  }
+
+  class MoveCommand <<ConcreteCommand>> {
+    -newPath : String
+    +MoveCommand(file : File, newPath : String)
+    #doExecute() : void
+  }
+
+  class ProtectCommand <<ConcreteCommand>> {
+    -readOnly : boolean
+    +ProtectCommand(file : File, readOnly : boolean)
+    #doExecute() : void
+  }
+
+  class FileManager <<Invoker>> {
+    -undoHistory : Deque<FileCommand>
+    -redoHistory : Deque<FileCommand>
+    +invoke(command : FileCommand) : void
+    +undo() : void
+    +redo() : void
+  }
+
+  File "1" o-- "1" Backup : createBackup()/restoreBackup()
+  FileCommand "1" o-- "1" File
+  FileCommand "1" o-- "0..1" Backup
+  FileCommand <|-- RenameCommand
+  FileCommand <|-- MoveCommand
+  FileCommand <|-- ProtectCommand
+  FileManager "1" o-- "*" FileCommand : undoHistory
+  FileManager "1" o-- "*" FileCommand : redoHistory
+
+  @enduml
+  \end{plantuml}
+  \caption{Klassendiagramm Dateimanagement mit Command \& Memento}
+\end{figure}
+
+\subsubsection*{[b] Java-Implementierung}
+
+\begin{minted}[fontsize=\small]{java}
+import java.time.LocalDateTime;
+import java.util.ArrayDeque;
+import java.util.Deque;
+import java.util.Objects;
+
+/**
+ * Originator: repräsentiert eine Datei.
+ */
+public final class File {
+
+    private String name;
+    private String path;
+    private final LocalDateTime created;
+    private boolean readOnly;
+
+    public File(String name, String path) {
+        this.name = Objects.requireNonNull(name);
+        this.path = Objects.requireNonNull(path);
+        this.created = LocalDateTime.now();
+        this.readOnly = false;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public String getPath() {
+        return path;
+    }
+
+    public LocalDateTime getCreated() {
+        return created;
+    }
+
+    public boolean isReadOnly() {
+        return readOnly;
+    }
+
+    public void setName(String name) {
+        this.name = Objects.requireNonNull(name);
+    }
+
+    public void setPath(String path) {
+        this.path = Objects.requireNonNull(path);
+    }
+
+    public void setReadOnly(boolean readOnly) {
+        this.readOnly = readOnly;
+    }
+
+    Backup createBackup() {
+        return new Backup(name, path, created, readOnly);
+    }
+
+    void restoreBackup(Backup backup) {
+        this.name = backup.getName();
+        this.path = backup.getPath();
+        this.readOnly = backup.isReadOnly();
+    }
+
+    @Override
+    public String toString() {
+        return "File{" +
+                "name='" + name + '\'' +
+                ", path='" + path + '\'' +
+                ", created=" + created +
+                ", readOnly=" + readOnly +
+                '}';
+    }
+}
+
+/**
+ * Memento: unveränderliches Backup-Objekt.
+ */
+final class Backup {
+
+    private final String name;
+    private final String path;
+    private final LocalDateTime created;
+    private final boolean readOnly;
+
+    Backup(String name, String path, LocalDateTime created, boolean readOnly) {
+        this.name = name;
+        this.path = path;
+        this.created = created;
+        this.readOnly = readOnly;
+    }
+
+    String getName() {
+        return name;
+    }
+
+    String getPath() {
+        return path;
+    }
+
+    LocalDateTime getCreated() {
+        return created;
+    }
+
+    boolean isReadOnly() {
+        return readOnly;
+    }
+}
+
+/**
+ * Command + Caretaker.
+ */
+public abstract class FileCommand {
+
+    private final File file;
+    private Backup backup;
+
+    protected FileCommand(File file) {
+        this.file = Objects.requireNonNull(file);
+    }
+
+    public final void execute() {
+        backup = file.createBackup();
+        doExecute();
+    }
+
+    public final void restore() {
+        if (backup == null) {
+            throw new IllegalStateException("Kein Backup vorhanden.");
+        }
+        file.restoreBackup(backup);
+    }
+
+    protected File getFile() {
+        return file;
+    }
+
+    protected abstract void doExecute();
+}
+
+/**
+ * ConcreteCommand: Umbenennen.
+ */
+public final class RenameCommand extends FileCommand {
+
+    private final String newName;
+
+    public RenameCommand(File file, String newName) {
+        super(file);
+        this.newName = Objects.requireNonNull(newName);
+    }
+
+    @Override
+    protected void doExecute() {
+        getFile().setName(newName);
+    }
+}
+
+/**
+ * ConcreteCommand: Verschieben.
+ */
+public final class MoveCommand extends FileCommand {
+
+    private final String newPath;
+
+    public MoveCommand(File file, String newPath) {
+        super(file);
+        this.newPath = Objects.requireNonNull(newPath);
+    }
+
+    @Override
+    protected void doExecute() {
+        getFile().setPath(newPath);
+    }
+}
+
+/**
+ * ConcreteCommand: Schreibschutz setzen/entfernen.
+ */
+public final class ProtectCommand extends FileCommand {
+
+    private final boolean readOnly;
+
+    public ProtectCommand(File file, boolean readOnly) {
+        super(file);
+        this.readOnly = readOnly;
+    }
+
+    @Override
+    protected void doExecute() {
+        getFile().setReadOnly(readOnly);
+    }
+}
+
+/**
+ * Invoker: verwaltet Undo-/Redo-Stacks.
+ */
+public final class FileManager {
+
+    private final Deque<FileCommand> undoHistory = new ArrayDeque<>();
+    private final Deque<FileCommand> redoHistory = new ArrayDeque<>();
+
+    public void invoke(FileCommand command) {
+        command.execute();
+        undoHistory.push(command);
+        redoHistory.clear();
+    }
+
+    public void undo() {
+        if (undoHistory.isEmpty()) {
+            System.out.println("Nichts zum Rückgängig machen.");
+            return;
+        }
+        FileCommand command = undoHistory.pop();
+        command.restore();
+        redoHistory.push(command);
+    }
+
+    public void redo() {
+        if (redoHistory.isEmpty()) {
+            System.out.println("Nichts zum Wiederholen.");
+            return;
+        }
+        FileCommand command = redoHistory.pop();
+        command.execute();
+        undoHistory.push(command);
+    }
+}
+\end{minted}
+
+\subsubsection*{[c] Konsolenanwendung für die geforderte Befehlskette}
+
+\begin{minted}[fontsize=\small]{java}
+public class FileManagerDemo {
+
+    public static void main(String[] args) {
+        File file = new File("MyFile.txt", "/tmp");
+        FileManager manager = new FileManager();
+
+        printState("Neue Datei angelegt", file);
+
+        // Datei verschieben
+        manager.invoke(new MoveCommand(file, "/home/user/documents"));
+        printState("Nach Move", file);
+
+        // Datei als schreibgeschützt setzen
+        manager.invoke(new ProtectCommand(file, true));
+        printState("Nach Protect", file);
+
+        // Letzten Befehl rückgängig machen
+        manager.undo();
+        printState("Nach Undo (Protect)", file);
+
+        // Letzten Befehl rückgängig machen
+        manager.undo();
+        printState("Nach Undo (Move)", file);
+
+        // Letzten Befehl wiederholen
+        manager.redo();
+        printState("Nach Redo (Move)", file);
+    }
+
+    private static void printState(String label, File file) {
+        System.out.println(label + ": " + file);
+    }
+}
+\end{minted}
+
+Die tatsächliche Interaktion mit dem Dateisystem findet nicht statt; es werden lediglich die
+Attribute des \texttt{File}-Objekts angepasst und in der Konsole ausgegeben.
 
 \end{document}

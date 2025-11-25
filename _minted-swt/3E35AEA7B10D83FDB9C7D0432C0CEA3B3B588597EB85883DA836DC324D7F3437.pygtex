@@ -1,0 +1,35 @@
+\begin{Verbatim}[commandchars=\\\{\}]
+\PYG{k+kd}{public}\PYG{+w}{ }\PYG{k+kd}{class} \PYG{n+nc}{FileManagerDemo}\PYG{+w}{ }\PYG{p}{\PYGZob{}}
+
+\PYG{+w}{    }\PYG{k+kd}{public}\PYG{+w}{ }\PYG{k+kd}{static}\PYG{+w}{ }\PYG{k+kt}{void}\PYG{+w}{ }\PYG{n+nf}{main}\PYG{p}{(}\PYG{n}{String}\PYG{o}{[]}\PYG{+w}{ }\PYG{n}{args}\PYG{p}{)}\PYG{+w}{ }\PYG{p}{\PYGZob{}}
+\PYG{+w}{        }\PYG{n}{File}\PYG{+w}{ }\PYG{n}{file}\PYG{+w}{ }\PYG{o}{=}\PYG{+w}{ }\PYG{k}{new}\PYG{+w}{ }\PYG{n}{File}\PYG{p}{(}\PYG{l+s}{\PYGZdq{}MyFile.txt\PYGZdq{}}\PYG{p}{,}\PYG{+w}{ }\PYG{l+s}{\PYGZdq{}/tmp\PYGZdq{}}\PYG{p}{);}
+\PYG{+w}{        }\PYG{n}{FileManager}\PYG{+w}{ }\PYG{n}{manager}\PYG{+w}{ }\PYG{o}{=}\PYG{+w}{ }\PYG{k}{new}\PYG{+w}{ }\PYG{n}{FileManager}\PYG{p}{();}
+
+\PYG{+w}{        }\PYG{n}{printState}\PYG{p}{(}\PYG{l+s}{\PYGZdq{}Neue Datei angelegt\PYGZdq{}}\PYG{p}{,}\PYG{+w}{ }\PYG{n}{file}\PYG{p}{);}
+
+\PYG{+w}{        }\PYG{c+c1}{// Datei verschieben}
+\PYG{+w}{        }\PYG{n}{manager}\PYG{p}{.}\PYG{n+na}{invoke}\PYG{p}{(}\PYG{k}{new}\PYG{+w}{ }\PYG{n}{MoveCommand}\PYG{p}{(}\PYG{n}{file}\PYG{p}{,}\PYG{+w}{ }\PYG{l+s}{\PYGZdq{}/home/user/documents\PYGZdq{}}\PYG{p}{));}
+\PYG{+w}{        }\PYG{n}{printState}\PYG{p}{(}\PYG{l+s}{\PYGZdq{}Nach Move\PYGZdq{}}\PYG{p}{,}\PYG{+w}{ }\PYG{n}{file}\PYG{p}{);}
+
+\PYG{+w}{        }\PYG{c+c1}{// Datei als schreibgeschützt setzen}
+\PYG{+w}{        }\PYG{n}{manager}\PYG{p}{.}\PYG{n+na}{invoke}\PYG{p}{(}\PYG{k}{new}\PYG{+w}{ }\PYG{n}{ProtectCommand}\PYG{p}{(}\PYG{n}{file}\PYG{p}{,}\PYG{+w}{ }\PYG{k+kc}{true}\PYG{p}{));}
+\PYG{+w}{        }\PYG{n}{printState}\PYG{p}{(}\PYG{l+s}{\PYGZdq{}Nach Protect\PYGZdq{}}\PYG{p}{,}\PYG{+w}{ }\PYG{n}{file}\PYG{p}{);}
+
+\PYG{+w}{        }\PYG{c+c1}{// Letzten Befehl rückgängig machen}
+\PYG{+w}{        }\PYG{n}{manager}\PYG{p}{.}\PYG{n+na}{undo}\PYG{p}{();}
+\PYG{+w}{        }\PYG{n}{printState}\PYG{p}{(}\PYG{l+s}{\PYGZdq{}Nach Undo (Protect)\PYGZdq{}}\PYG{p}{,}\PYG{+w}{ }\PYG{n}{file}\PYG{p}{);}
+
+\PYG{+w}{        }\PYG{c+c1}{// Letzten Befehl rückgängig machen}
+\PYG{+w}{        }\PYG{n}{manager}\PYG{p}{.}\PYG{n+na}{undo}\PYG{p}{();}
+\PYG{+w}{        }\PYG{n}{printState}\PYG{p}{(}\PYG{l+s}{\PYGZdq{}Nach Undo (Move)\PYGZdq{}}\PYG{p}{,}\PYG{+w}{ }\PYG{n}{file}\PYG{p}{);}
+
+\PYG{+w}{        }\PYG{c+c1}{// Letzten Befehl wiederholen}
+\PYG{+w}{        }\PYG{n}{manager}\PYG{p}{.}\PYG{n+na}{redo}\PYG{p}{();}
+\PYG{+w}{        }\PYG{n}{printState}\PYG{p}{(}\PYG{l+s}{\PYGZdq{}Nach Redo (Move)\PYGZdq{}}\PYG{p}{,}\PYG{+w}{ }\PYG{n}{file}\PYG{p}{);}
+\PYG{+w}{    }\PYG{p}{\PYGZcb{}}
+
+\PYG{+w}{    }\PYG{k+kd}{private}\PYG{+w}{ }\PYG{k+kd}{static}\PYG{+w}{ }\PYG{k+kt}{void}\PYG{+w}{ }\PYG{n+nf}{printState}\PYG{p}{(}\PYG{n}{String}\PYG{+w}{ }\PYG{n}{label}\PYG{p}{,}\PYG{+w}{ }\PYG{n}{File}\PYG{+w}{ }\PYG{n}{file}\PYG{p}{)}\PYG{+w}{ }\PYG{p}{\PYGZob{}}
+\PYG{+w}{        }\PYG{n}{System}\PYG{p}{.}\PYG{n+na}{out}\PYG{p}{.}\PYG{n+na}{println}\PYG{p}{(}\PYG{n}{label}\PYG{+w}{ }\PYG{o}{+}\PYG{+w}{ }\PYG{l+s}{\PYGZdq{}: \PYGZdq{}}\PYG{+w}{ }\PYG{o}{+}\PYG{+w}{ }\PYG{n}{file}\PYG{p}{);}
+\PYG{+w}{    }\PYG{p}{\PYGZcb{}}
+\PYG{p}{\PYGZcb{}}
+\end{Verbatim}
